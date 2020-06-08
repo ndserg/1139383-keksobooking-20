@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Денис Наталевич](https://up.htmlacademy.ru/javascript/20/user/1139383).
-* Наставник: `Неизвестно`.
+* Наставник: [Никита Трофимов](https://htmlacademy.ru/profile/id76777).
 
 ---
 
