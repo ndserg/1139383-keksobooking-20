@@ -11,6 +11,7 @@
   var MIN_MAP_HEIGHT = 130;
   var MAX_MAP_HEIGHT = 630;
   var ADVERT_NUMBER = 8;
+  var ESC_KEY = 'Escape';
   var ENTER_KEY = 'Enter';
 
   var adverts = [];
@@ -29,12 +30,16 @@
   var filtersForm = document.querySelector('.map__filters');
   var pinsBlock = document.querySelector('.map__pins');
   var mapPinMain = pinsBlock.querySelector('.map__pin--main');
+  var houseTypeInput = adForm.querySelector('#type');
+  var priceInput = adForm.querySelector('#price');
+  var timeInInput = adForm.querySelector('#timein');
+  var timeOutInput = adForm.querySelector('#timeout');
   var roomsInput = adForm.querySelector('#room_number');
   var capacityInput = adForm.querySelector('#capacity');
-  //  var mapFiltersContainer = document.querySelector('.map__filters-container');
+  var mapFiltersContainer = document.querySelector('.map__filters-container');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-  //  var parentMapFiltersContainer = mapFiltersContainer.parentNode;
+  var parentMapFiltersContainer = mapFiltersContainer.parentNode;
 
   adverts.length = ADVERT_NUMBER;
 
@@ -52,6 +57,49 @@
     } else {
       capacityInput.setCustomValidity('');
     }
+  }
+
+  // Проверяем минимальную цену в зависимости от типа жилья
+  houseTypeInput.onchange = housePrice;
+
+  function housePrice() {
+    if (houseTypeInput.value === 'bungalo') {
+      priceInput.min = 0;
+      priceInput.placeholder = '0';
+    } else if (houseTypeInput.value === 'flat') {
+      priceInput.min = 1000;
+      priceInput.placeholder = '1000';
+    } else if (houseTypeInput.value === 'house') {
+      priceInput.min = 5000;
+      priceInput.placeholder = '5000';
+    } else if (houseTypeInput.value === 'palace') {
+      priceInput.min = 10000;
+      priceInput.placeholder = '10 000';
+    }
+  }
+
+  // Устанвливаем соответствующее время заезда и выезда
+  timeInInput.onchange = setTimeOut;
+  timeOutInput.onchange = setTimeIn;
+
+  function setTimeOut() {
+    for (var i = 0; i < timeOutInput.length; i++) {
+      if (timeOutInput[i].hasAttribute('selected')) {
+        timeOutInput[i].removeAttribute('selected');
+      }
+    }
+
+    timeOutInput[timeInInput.selectedIndex].setAttribute('selected', true);
+  }
+
+  function setTimeIn() {
+    for (var i = 0; i < timeInInput.length; i++) {
+      if (timeInInput[i].hasAttribute('selected')) {
+        timeInInput[i].removeAttribute('selected');
+      }
+    }
+
+    timeInInput[timeOutInput.selectedIndex].setAttribute('selected', true);
   }
 
   //  Координаты блока относительно блока MAP
@@ -112,7 +160,7 @@
   formControlsToggle('add', filtersForm.elements, 'disabled', 'disabled');
 
   //  Генератор окончаний числительных
-  var nubersEnding = function declination(number, titles) {
+  var numbersEnding = function declination(number, titles) {
     var cases = [2, 0, 1, 1, 1, 2];
     return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
   };
@@ -230,7 +278,7 @@
         advertAddress.textContent = adverts[n].offer.address;
         advertPrice.textContent = adverts[n].offer.price + '₽/ночь';
         advertHouseType.textContent = houseTypes[adverts[n].offer.type];
-        advertRoomAndGuest.textContent = adverts[n].offer.rooms + nubersEnding(adverts[n].offer.rooms, [' комната', ' комнаты', ' комнат']) + ' для ' + adverts[n].offer.guests + nubersEnding(adverts[n].offer.guests, [' гостя', ' гостей', ' гостей']);
+        advertRoomAndGuest.textContent = adverts[n].offer.rooms + numbersEnding(adverts[n].offer.rooms, [' комната', ' комнаты', ' комнат']) + ' для ' + adverts[n].offer.guests + numbersEnding(adverts[n].offer.guests, [' гостя', ' гостей', ' гостей']);
         advertCheckTime.textContent = 'Заезд после ' + adverts[n].offer.checkin + ', выезд до ' + adverts[n].offer.checkout;
         advertDescription.textContent = adverts[n].offer.description;
         advertAvatar.src = adverts[n].author.avatar;
@@ -269,6 +317,10 @@
         });
 
         //  добавляем pins & cards в fragments
+        pinElement.classList.add('pin__num--' + n);
+        cardElement.classList.add('map__card--' + n);
+        cardElement.style.visibility = 'hidden';
+
         pinsFragment.appendChild(pinElement);
         cardsFragment.appendChild(cardElement);
       });
@@ -276,12 +328,52 @@
       //  добавляем pins & cards fragments в DOM
       pinsBlock.appendChild(pinsFragment);
 
-      /*  ******** Временно убираем вывод карточек
       parentMapFiltersContainer.insertBefore(cardsFragment, mapFiltersContainer);
-      ******* */
 
       //  Конец отрисовки сгенерированных DOM-элементов в блок .map__pins и Card-элементов в блок .map перед блоком .map__filters-container
     };
     renderMapPins();
+
+    // Узнаем клик на пине
+    var pinsClickHandler = function (evt) {
+      var mapCards = map.querySelectorAll('.map__card');
+      mapCards.forEach(function (item, i) {
+        mapCards[i].style.visibility = 'hidden';
+        return mapCards;
+      });
+
+      for (var i = 0; i <= evt.target.classList.length; i++) {
+        var pinClass = String(evt.target.classList[i]);
+
+        if (pinClass.includes('pin__num--')) {
+          var pinNum = pinClass.slice(10);
+          var mapCard = map.querySelector('.map__card--' + pinNum);
+
+          mapCard.style.visibility = 'visible';
+
+          var closeMapCard = mapCard.querySelector('.popup__close');
+
+          var closeCardOnEsc = function (closekey) {
+            if (closekey.key === ESC_KEY) {
+              mapCard.style.visibility = 'hidden';
+              document.removeEventListener('keydown', closeCardOnEsc);
+            }
+          };
+
+          closeMapCard.addEventListener('click', function () {
+            mapCard.style.visibility = 'hidden';
+          });
+
+          document.addEventListener('keydown', closeCardOnEsc);
+        }
+      }
+    };
+
+    pinsBlock.addEventListener('click', pinsClickHandler);
+    pinsBlock.addEventListener('keydown', function (evt) {
+      if (evt.key === ENTER_KEY) {
+        pinsClickHandler();
+      }
+    });
   };
 })();
