@@ -1,5 +1,7 @@
 'use strict';
 (function () {
+  window.ESC_KEY = 'Escape';
+  window.ENTER_KEY = 'Enter';
   var LEADING_ZERO = 10;
   var MIN_MAP_WIDTH = 0;
   var MAX_MAP_WIDTH = 1200;
