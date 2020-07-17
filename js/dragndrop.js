@@ -11,7 +11,7 @@
   var dialogHandler = pinsBlock.querySelector('.map__pin--main');
 
   var pincCoordinates = function () {
-    adFormAddress.setAttribute('value', window.util.getCoordinates(dialogHandler, window.MAIN_PIN_WIDTH, window.MAIN_PIN_HEIGHT).itemX + PIN_SIZE + ', ' + (window.util.getCoordinates(dialogHandler, window.MAIN_PIN_WIDTH, window.MAIN_PIN_HEIGHT).itemY + PIN_SIZE));
+    adFormAddress.setAttribute('value', window.util.getCoordinates(dialogHandler, window.data.MAIN_PIN_WIDTH, window.data.MAIN_PIN_HEIGHT).itemX + PIN_SIZE + ', ' + (window.util.getCoordinates(dialogHandler, window.data.MAIN_PIN_WIDTH, window.data.MAIN_PIN_HEIGHT).itemY + PIN_SIZE));
   };
 
   dialogHandler.addEventListener('mousedown', function (evt) {

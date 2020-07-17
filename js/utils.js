@@ -72,7 +72,7 @@
     //  Координаты блока относительно блока MAP
     getCoordinates: function getCoord(item, itemWidth, itemHeight) {
       var pinItem = item.getBoundingClientRect();
-      var pinCoordGapX = Math.floor((document.querySelector('html').offsetWidth - window.map.offsetWidth) / 2);
+      var pinCoordGapX = Math.floor((document.querySelector('html').offsetWidth - window.data.map.offsetWidth) / 2);
 
       return {
         itemY: Math.floor(pinItem.top + pageYOffset + itemHeight),
