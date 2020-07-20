@@ -7,19 +7,44 @@
     'MAIN_PIN_HEIGHT': 65,
     'map': document.querySelector('.map')
   };
-  var ADVERT_NUMBER = 8;
+  var ADVERT_NUMBER = 5;
 
+  var mapPinFilter = window.data.map.querySelector('.map__filters');
   var adFormAddress = document.querySelector('#address');
   var mapPinMain = document.querySelector('.map__pin--main');
 
   window.adverts = [];
-  window.adverts.length = ADVERT_NUMBER;
 
   // загружаем данные объявлений
   var successHandler = function (adverts) {
-    window.adverts = adverts;
-    addAdvert();
+    window.allAdverts = adverts;
+    window.adverts = adverts.slice(0, ADVERT_NUMBER);
   };
+
+  mapPinFilter.addEventListener('change', onHouseTypeChange);
+
+  function onHouseTypeChange() {
+    // закрываем карточки объявлений
+    var mapCards = window.data.map.querySelectorAll('.map__card');
+    mapCards.forEach(function (item) {
+      item.style.visibility = 'hidden';
+      return mapCards;
+    });
+
+    // фильтруем полученные данные и собираем новый массив
+    var selectedAdverts = window.allAdverts;
+    var mapFilterValue = event.target.value;
+
+    if (event.target.value !== 'any') {
+      selectedAdverts = window.allAdverts.filter(function (filterValue) {
+        return filterValue.offer.type === mapFilterValue;
+      });
+    } else {
+      selectedAdverts = window.adverts;
+    }
+
+    window.mapRendering(selectedAdverts, true);
+  }
 
   var errorHandler = function (errorMessage) {
     var node = document.createElement('div');
@@ -34,37 +59,6 @@
   };
 
   window.backend.loadData(successHandler, errorHandler);
-
-  //  Создаем массив обектов (объявлений)
-  var addAdvert = function () {
-    for (var i = 0; i < window.adverts.length; i++) {
-      window.adverts[i] =
-      {author: {
-        avatar: window.adverts[i].author.avatar
-      },
-      offer: {
-        title: window.adverts[i].offer.title,
-        address: window.adverts[i].offer.address,
-        price: window.adverts[i].offer.price,
-        type: window.adverts[i].offer.type,
-        rooms: window.adverts[i].offer.rooms,
-        guests: window.adverts[i].offer.guests,
-        checkin: window.adverts[i].offer.checkin,
-        checkout: window.adverts[i].offer.checkout,
-        features: window.adverts[i].offer.features,
-        description: window.adverts[i].offer.description,
-        photos: window.adverts[i].offer.photos
-      },
-      location: {
-        x: window.adverts[i].location.x,
-        y: window.adverts[i].location.y,
-      }
-      };
-      window.adverts[i].offer.address = window.adverts[i].location.x + ',' + window.adverts[i].location.y;
-    }
-
-    return window.adverts;
-  };
 
   //  Значение поля адрес при открытии страницы до активции карты
   adFormAddress.setAttribute('value', window.util.getCoordinates(mapPinMain, window.data.MAIN_PIN_WIDTH, window.data.MAIN_PIN_HEIGHT).itemX + ', ' + window.util.getCoordinates(mapPinMain, window.data.MAIN_PIN_WIDTH, window.data.MAIN_PIN_HEIGHT / 2).itemY);
