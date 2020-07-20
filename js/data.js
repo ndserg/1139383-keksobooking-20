@@ -1,12 +1,14 @@
 'use strict';
 (function () {
-  window.ESC_KEY = 'Escape';
-  window.ENTER_KEY = 'Enter';
-  window.MAIN_PIN_WIDTH = 65;
-  window.MAIN_PIN_HEIGHT = 65;
+  window.data = {
+    'ESC_KEY': 'Escape',
+    'ENTER_KEY': 'Enter',
+    'MAIN_PIN_WIDTH': 65,
+    'MAIN_PIN_HEIGHT': 65,
+    'map': document.querySelector('.map')
+  };
   var ADVERT_NUMBER = 8;
 
-  window.map = document.querySelector('.map');
   var adFormAddress = document.querySelector('#address');
   var mapPinMain = document.querySelector('.map__pin--main');
 
@@ -31,7 +33,7 @@
     document.body.insertAdjacentElement('afterbegin', node);
   };
 
-  window.load(successHandler, errorHandler);
+  window.backend.loadData(successHandler, errorHandler);
 
   //  Создаем массив обектов (объявлений)
   var addAdvert = function () {
@@ -65,5 +67,5 @@
   };
 
   //  Значение поля адрес при открытии страницы до активции карты
-  adFormAddress.setAttribute('value', window.util.getCoordinates(mapPinMain, window.MAIN_PIN_WIDTH, window.MAIN_PIN_HEIGHT).itemX + ', ' + window.util.getCoordinates(mapPinMain, window.MAIN_PIN_WIDTH, window.MAIN_PIN_HEIGHT / 2).itemY);
+  adFormAddress.setAttribute('value', window.util.getCoordinates(mapPinMain, window.data.MAIN_PIN_WIDTH, window.data.MAIN_PIN_HEIGHT).itemX + ', ' + window.util.getCoordinates(mapPinMain, window.data.MAIN_PIN_WIDTH, window.data.MAIN_PIN_HEIGHT / 2).itemY);
 })();

@@ -4,7 +4,7 @@
 
   // Узнаем клик на пине
   var pinsClickHandler = function (evt) {
-    var mapCards = window.map.querySelectorAll('.map__card');
+    var mapCards = window.data.map.querySelectorAll('.map__card');
     mapCards.forEach(function (item, i) {
       mapCards[i].style.visibility = 'hidden';
       return mapCards;
@@ -15,14 +15,14 @@
 
       if (pinClass.includes('pin__num--')) {
         var pinNum = pinClass.slice(10);
-        var mapCard = window.map.querySelector('.map__card--' + pinNum);
+        var mapCard = window.data.map.querySelector('.map__card--' + pinNum);
 
         mapCard.style.visibility = 'visible';
 
         var closeMapCard = mapCard.querySelector('.popup__close');
 
         var closeCardOnEsc = function (closekey) {
-          if (closekey.key === window.ESC_KEY) {
+          if (closekey.key === window.data.ESC_KEY) {
             mapCard.style.visibility = 'hidden';
             document.removeEventListener('keydown', closeCardOnEsc);
           }
@@ -39,7 +39,7 @@
 
   pinsBlock.addEventListener('click', pinsClickHandler);
   pinsBlock.addEventListener('keydown', function (evt) {
-    if (evt.key === window.ENTER_KEY) {
+    if (evt.key === window.data.ENTER_KEY) {
       pinsClickHandler();
     }
   });
