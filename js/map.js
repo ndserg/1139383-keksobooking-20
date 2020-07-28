@@ -32,6 +32,6 @@
     window.util.removeClassOfElement(adForm, 'ad-form--disabled');
     window.util.formControlsToggle('remove', adForm.elements, 'disabled', 'disabled');
     window.util.formControlsToggle('remove', filtersForm.elements, 'disabled', 'disabled');
-    window.mapRendering(window.adverts, false);
+    window.mapRendering(window.allAdverts, false);
   };
 })();

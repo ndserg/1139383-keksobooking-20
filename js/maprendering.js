@@ -2,6 +2,7 @@
 (function () {
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
+  var MAX_ADVERTS = 5;
 
   var pinsBlock = document.querySelector('.map__pins');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
@@ -29,8 +30,13 @@
     // удаление всех pins при изменении фильтра
     if (clear) {
       var pins = document.querySelectorAll('.map__pin + button:not(.map__pin--main)');
+      var cards = document.querySelectorAll('.map__card');
 
       pins.forEach(function (element) {
+        element.parentNode.removeChild(element);
+      });
+
+      cards.forEach(function (element) {
         element.parentNode.removeChild(element);
       });
     }
@@ -39,10 +45,10 @@
     var pinsFragment = document.createDocumentFragment();
     var cardsFragment = document.createDocumentFragment();
 
+    adverts = adverts.slice(0, MAX_ADVERTS);
     adverts.forEach(function (item, n) {
       var pinElement = pinTemplate.cloneNode(true);
       var avatarImg = pinElement.querySelector('img');
-
       var cardElement = cardTemplate.cloneNode(true);
       var advertTitle = cardElement.querySelector('.popup__title');
       var advertAddress = cardElement.querySelector('.popup__text--address');
