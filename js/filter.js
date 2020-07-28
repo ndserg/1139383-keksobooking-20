@@ -114,7 +114,7 @@
     return offers;
   }
 
-  function onFilterChange() {
+  function onFilterChange(evt) {
     // закрываем карточки объявлений
     var mapCards = window.data.map.querySelectorAll('.map__card');
     mapCards.forEach(function (item) {
@@ -124,8 +124,8 @@
 
     // фильтруем полученные данные и собираем новый массив
 
-    var mapFilterValue = event.target.value;
-    var filterType = event.target.name;
+    var mapFilterValue = evt.target.value;
+    var filterType = evt.target.name;
 
     window.debounce(setFilters(filterType, mapFilterValue));
 
