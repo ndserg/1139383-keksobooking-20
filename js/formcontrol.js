@@ -10,38 +10,52 @@
   var filtersForm = document.querySelector('.map__filters');
   var adFormReset = adForm.querySelector('.ad-form__reset');
 
+  var minHousePrices = {
+    bungalo: 0,
+    flat: 1000,
+    house: 5000,
+    palace: 10000
+  };
+
+  var guestsNumber = {
+    min: '0',
+    notForGuests: '100',
+  };
+
   //  Проверяем соответствие количества комнат - количеству гостей
   roomsInput.onchange = checkCapacity;
   capacityInput.onchange = checkCapacity;
 
   function checkCapacity() {
-    if (roomsInput.value >= 100 && capacityInput.value > 0) {
-      capacityInput.setCustomValidity('Не для гостей!');
-    } else if (capacityInput.value < 1 && roomsInput.value < 100) {
-      capacityInput.setCustomValidity('Не для гостей!');
-    } else if (capacityInput.value > roomsInput.value) {
-      capacityInput.setCustomValidity('Слишко много гостей!');
-    } else {
-      capacityInput.setCustomValidity('');
+    switch (true) {
+      case (roomsInput.value === guestsNumber.notForGuests && capacityInput.value !== guestsNumber.min):
+        return capacityInput.setCustomValidity('Не для гостей!');
+      case (roomsInput.value !== guestsNumber.notForGuests && capacityInput.value === guestsNumber.min):
+        return capacityInput.setCustomValidity('Не для гостей!');
+      case (capacityInput.value > roomsInput.value):
+        return capacityInput.setCustomValidity('Слишко много гостей!');
+      default:
+        return capacityInput.setCustomValidity('');
     }
   }
 
-  // Проверяем минимальную цену в зависимости от типа жилья
-  houseTypeInput.onchange = housePrice;
+  // Установит минимальную цену в зависимости от типа жилья
+  function setHousePrice() {
+    if (minHousePrices.hasOwnProperty(houseTypeInput.value)) {
+      priceInput.min = minHousePrices[houseTypeInput.value];
+      priceInput.placeholder = minHousePrices[houseTypeInput.value];
+    }
+  }
 
-  function housePrice() {
-    if (houseTypeInput.value === 'bungalo') {
-      priceInput.min = 0;
-      priceInput.placeholder = '0';
-    } else if (houseTypeInput.value === 'flat') {
-      priceInput.min = 1000;
-      priceInput.placeholder = '1000';
-    } else if (houseTypeInput.value === 'house') {
-      priceInput.min = 5000;
-      priceInput.placeholder = '5000';
-    } else if (houseTypeInput.value === 'palace') {
-      priceInput.min = 10000;
-      priceInput.placeholder = '10 000';
+  setHousePrice();
+
+  // Проверяем минимальную цену в зависимости от типа жилья
+  houseTypeInput.onchange = checkHousePrice;
+
+  function checkHousePrice() {
+    if (minHousePrices.hasOwnProperty(houseTypeInput.value)) {
+      priceInput.min = minHousePrices[houseTypeInput.value];
+      priceInput.placeholder = minHousePrices[houseTypeInput.value];
     }
   }
 
@@ -50,22 +64,16 @@
   timeOutInput.onchange = setTimeIn;
 
   function setTimeOut() {
-    timeOutInput.foreEach(function (element) {
-      if (element.hasAttribute('selected')) {
-        element.removeAttribute('selected');
-      }
-    });
-
+    if (timeOutInput.hasAttribute('selected')) {
+      timeOutInput.removeAttribute('selected');
+    }
     timeOutInput[timeInInput.selectedIndex].setAttribute('selected', true);
   }
 
   function setTimeIn() {
-    timeInInput.foreEach(function (element) {
-      if (element.hasAttribute('selected')) {
-        element.removeAttribute('selected');
-      }
-    });
-
+    if (timeInInput.hasAttribute('selected')) {
+      timeInInput.removeAttribute('selected');
+    }
     timeInInput[timeOutInput.selectedIndex].setAttribute('selected', true);
   }
 

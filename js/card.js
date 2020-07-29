@@ -8,43 +8,43 @@
     }
   };
 
+  var cardRendering = function (mapCard) {
+    mapCard.style.visibility = 'visible';
+    var closeMapCard = mapCard.querySelector('.popup__close');
+
+    var onCloseCardKeyDown = function (closekey) {
+      if (closekey.key === window.data.ESC_KEY) {
+        mapCard.style.visibility = 'hidden';
+        pinsBlock.removeEventListener('keydown', onCloseCardKeyDown);
+        closeMapCard.removeEventListener('click', onCloseCardClick);
+      }
+    };
+
+    var onCloseCardClick = function () {
+      mapCard.style.visibility = 'hidden';
+      pinsBlock.removeEventListener('keydown', onCloseCardKeyDown);
+      closeMapCard.removeEventListener('click', onCloseCardClick);
+    };
+
+    closeMapCard.addEventListener('click', onCloseCardClick);
+    pinsBlock.addEventListener('keydown', onCloseCardKeyDown);
+  };
+
   // Узнаем клик на пине
   var onPinsClick = function (evt) {
-    var mapCards = window.data.map.querySelectorAll('.map__card');
-    mapCards.forEach(function (item, i) {
-      mapCards[i].style.visibility = 'hidden';
-      return mapCards;
-    });
+    if (evt.target.dataset.number) {
+      var pinNumber = evt.target.dataset.number;
+      var mapCards = window.data.map.querySelectorAll('.map__card');
 
-    evt.target.classList.forEach(function (element) {
-      var pinClass = String(element);
-
-      if (pinClass.includes('pin__num--')) {
-        var pinNum = pinClass.slice(10);
-        var mapCard = window.data.map.querySelector('.map__card--' + pinNum);
-
-        mapCard.style.visibility = 'visible';
-
-        var closeMapCard = mapCard.querySelector('.popup__close');
-
-        var onCloseCardKeyDown = function (closekey) {
-          if (closekey.key === window.data.ESC_KEY) {
-            mapCard.style.visibility = 'hidden';
-            document.removeEventListener('keydown', onCloseCardKeyDown);
-            document.removeEventListener('click', onCloseCardClick);
-          }
-        };
-
-        var onCloseCardClick = function () {
-          mapCard.style.visibility = 'hidden';
-          document.removeEventListener('keydown', onCloseCardKeyDown);
-          document.removeEventListener('click', onCloseCardClick);
-        };
-
-        closeMapCard.addEventListener('click', onCloseCardClick);
-        document.addEventListener('keydown', onCloseCardKeyDown);
-      }
-    });
+      mapCards.forEach(function (element) {
+        if (element.style.visibility === 'visible' && element.dataset.number === pinNumber) {
+          return element;
+        } else {
+          element.style.visibility = 'hidden';
+          return element.dataset.number === pinNumber ? cardRendering(element) : '';
+        }
+      });
+    }
   };
 
   pinsBlock.addEventListener('click', onPinsClick);

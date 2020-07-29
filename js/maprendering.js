@@ -112,9 +112,9 @@
       });
 
       //  добавляем pins & cards в fragments
-      pinElement.classList.add('pin__num--' + n);
-      avatarImg.classList.add('pin__num--' + n);
-      cardElement.classList.add('map__card--' + n);
+      pinElement.dataset.number = n;
+      avatarImg.dataset.number = n;
+      cardElement.dataset.number = n;
       cardElement.style.visibility = 'hidden';
 
       pinsFragment.appendChild(pinElement);
