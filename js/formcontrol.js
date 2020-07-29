@@ -50,21 +50,21 @@
   timeOutInput.onchange = setTimeIn;
 
   function setTimeOut() {
-    for (var i = 0; i < timeOutInput.length; i++) {
-      if (timeOutInput[i].hasAttribute('selected')) {
-        timeOutInput[i].removeAttribute('selected');
+    timeOutInput.foreEach(function (element) {
+      if (element.hasAttribute('selected')) {
+        element.removeAttribute('selected');
       }
-    }
+    });
 
     timeOutInput[timeInInput.selectedIndex].setAttribute('selected', true);
   }
 
   function setTimeIn() {
-    for (var i = 0; i < timeInInput.length; i++) {
-      if (timeInInput[i].hasAttribute('selected')) {
-        timeInInput[i].removeAttribute('selected');
+    timeInInput.foreEach(function (element) {
+      if (element.hasAttribute('selected')) {
+        element.removeAttribute('selected');
       }
-    }
+    });
 
     timeInInput[timeOutInput.selectedIndex].setAttribute('selected', true);
   }

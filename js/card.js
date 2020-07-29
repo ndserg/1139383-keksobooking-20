@@ -2,16 +2,22 @@
 (function () {
   var pinsBlock = document.querySelector('.map__pins');
 
+  var onPinsKeyDown = function (evt) {
+    if (evt.key === window.data.ENTER_KEY) {
+      onPinsClick();
+    }
+  };
+
   // Узнаем клик на пине
-  var pinsClickHandler = function (evt) {
+  var onPinsClick = function (evt) {
     var mapCards = window.data.map.querySelectorAll('.map__card');
     mapCards.forEach(function (item, i) {
       mapCards[i].style.visibility = 'hidden';
       return mapCards;
     });
 
-    for (var i = 0; i <= evt.target.classList.length; i++) {
-      var pinClass = String(evt.target.classList[i]);
+    evt.target.classList.forEach(function (element) {
+      var pinClass = String(element);
 
       if (pinClass.includes('pin__num--')) {
         var pinNum = pinClass.slice(10);
@@ -21,26 +27,26 @@
 
         var closeMapCard = mapCard.querySelector('.popup__close');
 
-        var closeCardOnEsc = function (closekey) {
+        var onCloseCardKeyDown = function (closekey) {
           if (closekey.key === window.data.ESC_KEY) {
             mapCard.style.visibility = 'hidden';
-            document.removeEventListener('keydown', closeCardOnEsc);
+            document.removeEventListener('keydown', onCloseCardKeyDown);
+            document.removeEventListener('click', onCloseCardClick);
           }
         };
 
-        closeMapCard.addEventListener('click', function () {
+        var onCloseCardClick = function () {
           mapCard.style.visibility = 'hidden';
-        });
+          document.removeEventListener('keydown', onCloseCardKeyDown);
+          document.removeEventListener('click', onCloseCardClick);
+        };
 
-        document.addEventListener('keydown', closeCardOnEsc);
+        closeMapCard.addEventListener('click', onCloseCardClick);
+        document.addEventListener('keydown', onCloseCardKeyDown);
       }
-    }
+    });
   };
 
-  pinsBlock.addEventListener('click', pinsClickHandler);
-  pinsBlock.addEventListener('keydown', function (evt) {
-    if (evt.key === window.data.ENTER_KEY) {
-      pinsClickHandler();
-    }
-  });
+  pinsBlock.addEventListener('click', onPinsClick);
+  pinsBlock.addEventListener('keydown', onPinsKeyDown);
 })();

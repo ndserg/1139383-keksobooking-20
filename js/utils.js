@@ -3,28 +3,24 @@
   window.util = {
     // Добавление класса элементам
     addClassOfElement: function (item, itemClass) {
-      if (item.classList.contains(itemClass) === false) {
-        item.classList.add(itemClass);
-      }
+      item.classList.add(itemClass);
     },
 
     // Удаление класса элементам
     removeClassOfElement: function (item, itemClass) {
-      if (item.classList.contains(itemClass) === true) {
-        item.classList.remove(itemClass);
-      }
+      item.classList.remove(itemClass);
     },
 
     // Установка атрибута элемента
     setElementAttribute: function (item, attrName, attrValue) {
-      if (item.hasAttribute(attrName, attrValue) === false) {
+      if (item.hasAttribute(attrName) === false) {
         item.setAttribute(attrName, attrValue);
       }
     },
 
     // Удаление атрибута элемента
     removeElementAttribute: function (item, attrName, attrValue) {
-      if (item.hasAttribute(attrName, attrValue) === true) {
+      if (item.hasAttribute(attrName) === true) {
         item.removeAttribute(attrName, attrValue);
       }
     },
@@ -37,9 +33,9 @@
         toggleSetting = window.util.removeElementAttribute;
       }
 
-      for (var i = 0; i < formControls.length; i++) {
-        toggleSetting(formControls[i], attrName, attrValue);
-      }
+      Array.from(formControls).forEach(function (element) {
+        toggleSetting(element, attrName, attrValue);
+      });
     },
 
     //  Генератор окончаний числительных

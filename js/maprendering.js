@@ -113,6 +113,7 @@
 
       //  добавляем pins & cards в fragments
       pinElement.classList.add('pin__num--' + n);
+      avatarImg.classList.add('pin__num--' + n);
       cardElement.classList.add('map__card--' + n);
       cardElement.style.visibility = 'hidden';
 

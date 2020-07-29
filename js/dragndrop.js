@@ -1,55 +1,65 @@
 'use strict';
-(function () {
-  var PIN_SIZE = 62;
-  var mapWidth = 1200;
-  var minX = (screen.width - mapWidth) / 2;
-  var maxX = (screen.width - mapWidth) / 2 + mapWidth;
-  var minY = 130;
-  var maxY = 630;
-  var adFormAddress = document.querySelector('#address');
-  var pinsBlock = document.querySelector('.map__pins');
-  var dialogHandler = pinsBlock.querySelector('.map__pin--main');
 
-  var pincCoordinates = function () {
-    adFormAddress.setAttribute('value', window.util.getCoordinates(dialogHandler, window.data.MAIN_PIN_WIDTH, window.data.MAIN_PIN_HEIGHT).itemX + PIN_SIZE + ', ' + (window.util.getCoordinates(dialogHandler, window.data.MAIN_PIN_WIDTH, window.data.MAIN_PIN_HEIGHT).itemY + PIN_SIZE));
+(function () {
+  var dialogHandler = document.querySelector('.map__pin--main');
+  var adFormAddress = document.querySelector('#address');
+
+  var dialogHandlerSize = {
+    WIDTH: 62,
+    HEIGHT: 84,
+  };
+
+  var CoordinatesLimit = {
+    X_MIN: 0,
+    X_MAX: 1200,
+    Y_MIN: 130,
+    Y_MAX: 630,
   };
 
   dialogHandler.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
     var startCoords = {
-      x: evt.pageX,
-      y: evt.pageY
+      x: evt.clientX,
+      y: evt.clientY
     };
-
-    var dragged = false;
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-      dragged = true;
-
-      if ((moveEvt.pageX > minX) && (moveEvt.pageX < maxX)) {
-        var coordX = moveEvt.pageX;
-      }
-
-      if ((moveEvt.pageY > minY) && (moveEvt.pageY < maxY)) {
-        var coordY = moveEvt.pageY;
-      }
 
       var shift = {
-        x: startCoords.x - coordX,
-        y: startCoords.y - coordY
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
       };
 
       startCoords = {
-        x: coordX,
-        y: coordY
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
       };
 
       dialogHandler.style.top = (dialogHandler.offsetTop - shift.y) + 'px';
       dialogHandler.style.left = (dialogHandler.offsetLeft - shift.x) + 'px';
 
-      pincCoordinates();
+      var halfWidth = dialogHandlerSize.WIDTH / 2;
+      var coordMaxX = CoordinatesLimit.X_MAX - halfWidth;
+      var coordMinX = CoordinatesLimit.X_MIN - halfWidth;
+      var coordMaxY = CoordinatesLimit.Y_MAX - dialogHandler.offsetHeight;
+      var coordMinY = CoordinatesLimit.Y_MIN - dialogHandler.offsetHeight;
+
+      adFormAddress.value = (dialogHandler.offsetLeft - shift.x + halfWidth) + ', ' + (dialogHandler.offsetTop - shift.y + dialogHandlerSize.HEIGHT);
+
+      if (dialogHandler.offsetLeft > coordMaxX) {
+        dialogHandler.style.left = coordMaxX + 'px';
+      } else if (dialogHandler.offsetLeft < coordMinX) {
+        dialogHandler.style.left = coordMinX + 'px';
+      }
+
+      if (dialogHandler.offsetTop > coordMaxY) {
+        dialogHandler.style.top = coordMaxY + 'px';
+      } else if (dialogHandler.offsetTop < coordMinY) {
+        dialogHandler.style.top = coordMinY + 'px';
+      }
+
     };
 
     var onMouseUp = function (upEvt) {
@@ -57,15 +67,6 @@
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-
-      if (dragged) {
-        var onClickPreventDefault = function (clickEvt) {
-          clickEvt.preventDefault();
-          dialogHandler.removeEventListener('click', onClickPreventDefault);
-          pincCoordinates();
-        };
-        dialogHandler.addEventListener('click', onClickPreventDefault);
-      }
     };
 
     document.addEventListener('mousemove', onMouseMove);
